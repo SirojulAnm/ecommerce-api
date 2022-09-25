@@ -3,7 +3,9 @@ package product
 type Service interface {
 	AddProduct(input ProductInput) (Product, error)
 	GetProductDetailByID(ID int) (Product, error)
+	CekProductByID(ID int) (bool, error)
 	ListProductsByCategoryID(categoryID int) ([]Product, error)
+	UpdateProductByID(ID int, stock int) error
 }
 
 type service struct {
@@ -39,6 +41,15 @@ func (s *service) GetProductDetailByID(ID int) (Product, error) {
 	return product, nil
 }
 
+func (s *service) CekProductByID(ID int) (bool, error) {
+	_, err := s.repository.FirstByID(ID)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func (s *service) ListProductsByCategoryID(categoryID int) ([]Product, error) {
 	productsByCategori, err := s.repository.FindByCategoryID(categoryID)
 	if err != nil {
@@ -46,4 +57,13 @@ func (s *service) ListProductsByCategoryID(categoryID int) ([]Product, error) {
 	}
 
 	return productsByCategori, nil
+}
+
+func (s *service) UpdateProductByID(ID int, stock int) error {
+	err := s.repository.UpdateByID(ID, stock)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

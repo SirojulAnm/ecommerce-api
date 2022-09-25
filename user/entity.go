@@ -9,11 +9,10 @@ type User struct {
 	Phone        int
 	Email        string
 	PasswordHash string
-	// AvatarFileName string
-	Role      string
-	PostCode  int
-	Address   string
-	City      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Role         string
+	PostCode     int
+	Address      string
+	City         string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

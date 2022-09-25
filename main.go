@@ -10,6 +10,7 @@ import (
 	"superindo/category"
 	"superindo/handler"
 	"superindo/helper"
+	"superindo/order"
 	"superindo/product"
 	"superindo/user"
 
@@ -31,15 +32,18 @@ func main() {
 	userRepository := user.NewRepository(db)
 	categoryRepository := category.NewRepository(db)
 	productRepository := product.NewRepository(db)
+	orderRepository := order.NewRepository(db)
 
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 	categoryService := category.NewService(categoryRepository)
 	productService := product.NewService(productRepository)
+	orderService := order.NewService(orderRepository)
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	categoryHandler := handler.NewCategoryHandler(categoryService)
 	productHandler := handler.NewProductHandler(productService, categoryService)
+	orderHandler := handler.NewOrderHandler(orderService, productService)
 
 	router := gin.Default()
 	router.Use(cors.Default())
@@ -55,6 +59,8 @@ func main() {
 	api.POST("/product", authMiddleware(authService, userService), productHandler.AddProduct)
 	api.GET("/product/:id", authMiddleware(authService, userService), productHandler.GetProductDetail)
 	api.GET("/category/:id/product", authMiddleware(authService, userService), productHandler.GetProductsByCategoryID)
+
+	api.POST("/order", authMiddleware(authService, userService), orderHandler.AddOrder)
 
 	router.Run(":8083")
 }

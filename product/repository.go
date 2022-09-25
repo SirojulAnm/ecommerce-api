@@ -6,6 +6,7 @@ type Repository interface {
 	Save(product Product) (Product, error)
 	FirstByID(ID int) (Product, error)
 	FindByCategoryID(categoryID int) ([]Product, error)
+	UpdateByID(ID int, stock int) error
 }
 
 type repository struct {
@@ -45,4 +46,14 @@ func (r *repository) FindByCategoryID(categoryID int) ([]Product, error) {
 	}
 
 	return product, nil
+}
+
+func (r *repository) UpdateByID(ID int, stock int) error {
+	var product Product
+	err := r.db.Model(&product).Where("id = ?", ID).Update("stock", stock).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
